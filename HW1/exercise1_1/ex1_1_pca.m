@@ -21,7 +21,6 @@ clear ; close all; clc
 
 %% ============ Part 1: PCA on 2D Samples ===================
 fprintf('Reading and Visualizing initial 2D dataset.\n\n');
-clear ; close all; clc
 %  The following command loads the dataset.
 load ('ex1_1_data1.mat');
 
@@ -45,6 +44,8 @@ axis square;
 %  Compute mu, the mean of each feature
 mu = mean(X_norm);
 
+fprintf('Program paused. Press enter to continue.\n');
+pause;
 %  Draw the eigenvectors centered at the mean of samples. These lines show the
 %  directions of maximum variations in the dataset.
 hold on;
