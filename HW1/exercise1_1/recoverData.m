@@ -10,10 +10,9 @@ function X_rec = recoverData(Z, U, K)
 X_rec = zeros(size(Z, 1), size(U, 1));
 
 % ====================== YOUR CODE HERE ======================
-[n m] = size(U);
 i = [1:K];             
 
-X_rec(:) = ( U(:,i)*Z' )';
+X_rec = ( U(:,i)*Z' )';
 % =============================================================
 
 end
