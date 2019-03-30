@@ -10,11 +10,9 @@ function X_rec = recoverDataPCA(Z, U, K)
 X_rec = zeros(size(Z, 1), size(U, 1));
 
 % ====================== YOUR CODE HERE ======================
-% Instructions: Compute the approximation of the data by projecting back
-%               onto the original space using the top K eigenvectors in U.
-%               
+    i = [1:K];             
 
-
+    X_rec = ( U(:,i)*Z' )';
 % =============================================================
 
 end

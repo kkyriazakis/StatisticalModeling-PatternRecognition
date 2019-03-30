@@ -12,14 +12,16 @@ U = zeros(n);
 S = zeros(n);
 
 % ====================== YOUR CODE GOES HERE ======================
-% Instructions: You should first compute the covariance matrix. Then, 
-%  compute the eigenvectors and eigenvalues of the covariance matrix. 
-%
-% Note that the dataset X is normalized, when calculating the covariance
+Sigma_x = (1/m)*(X.'*X);
 
+[V,D] = eig(Sigma_x);
 
+eigenvalues = diag(D);
+[eigenvalues, pos]= sort(eigenvalues ,1,'descend');
+eigenvectors = V(:,pos);
 
-
+U = eigenvectors;
+S = eigenvalues;
 % =========================================================================
 
 end

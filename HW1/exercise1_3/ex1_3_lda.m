@@ -21,9 +21,7 @@
 clear ; close all; clc
 
 %% ================== Part 1: Load the Dataset  ===================
-%  We start using a small dataset that is easy to
-%  visualize
-%
+%  We start using a small dataset that is easy to visualize
 fprintf('Visualizing example dataset for LDA.\n\n');
 
 %  The following command loads the dataset. You should now have the 
@@ -140,9 +138,9 @@ iris_labels = 1*cellfun(@(x)isequal(x,'versicolor'),species)+2*cellfun(@(x)isequ
 [meas_norm, mu, sigma] = featureNormalize(meas);
 
 % Get the data for each class
-IRIS1 = 			%Samples of Class 0
-IRIS2 = 			%Samples of Class 1
-IRIS3 = 			%Samples of Class 2
+%IRIS1 = 			%Samples of Class 0     ---------------
+%IRIS2 = 			%Samples of Class 1     ---------------
+%IRIS3 = 			%Samples of Class 2     ---------------
 
 
 %  Visualize the example dataset

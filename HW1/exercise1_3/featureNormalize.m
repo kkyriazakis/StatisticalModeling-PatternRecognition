@@ -1,17 +1,12 @@
 function [X_norm, mu, sigma] = featureNormalize(X)
-%FEATURENORMALIZE Normalizes the features in X 
-%   FEATURENORMALIZE(X) returns a normalized version of X where
-%   the mean value of each feature is 0 and the standard deviation
-%   is 1. This is often a good preprocessing step to do when
-%   working with learning algorithms.
 
+    mu = mean(X);
+    sigma = std(X);
 
-mu = % mean of each column (feature)
+    [Sample_size, Feature_size] = size(X);
 
-sigma = % standart deviation of each column
-X_norm = % normalize each column independently
-
-
-% ============================================================
+    for i=1:Feature_size
+       X_norm(:,i) = (X(:,i) - mu(i))/sigma(i);
+    end
 
 end

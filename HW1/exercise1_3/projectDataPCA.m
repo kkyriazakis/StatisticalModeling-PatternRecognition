@@ -10,10 +10,9 @@ function Z = projectDataPCA(X, U, K)
 Z = zeros(size(X, 1), K);
 
 % ====================== YOUR CODE HERE ======================
-% Instructions: Compute the projection of the data using only the top K 
-%               eigenvectors in U (first K columns). 
+    i = [1:K];
 
-
+    Z = ( U(:,i)'*X' )';
 % =============================================================
 
 end
