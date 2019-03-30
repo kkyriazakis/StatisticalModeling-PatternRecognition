@@ -3,10 +3,12 @@ function A = myLDA(Samples, Labels, NewDim)
 %   Samples: The Data Samples 
 %   Labels: The labels that correspond to the Samples
 %   NewDim: The New Dimension of the Feature Vector after applying LDA
+       
+    [NumSamples NumFeatures] = size(Samples);
 
 	A=zeros(NumFeatures,NewDim);
     
-	[NumSamples NumFeatures] = size(Samples);
+	
     NumLabels = length(Labels);
     if(NumSamples ~= NumLabels) then
         fprintf('\nNumber of Samples are not the same with the Number of Labels.\n\n');
