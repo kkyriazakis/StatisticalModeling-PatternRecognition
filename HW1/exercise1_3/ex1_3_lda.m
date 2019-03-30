@@ -155,11 +155,17 @@ v = myLDA(meas_norm, iris_labels, NewDim);
 %  Project the data on the direction of the two dimensional v
 [meas_reduced] = projectDataLDA(meas_norm, v);
 
+M_reduced1 = meas_reduced( iris_labels == 0 ,:);	%Samples of Class 0
+M_reduced2 = meas_reduced( iris_labels == 1 ,:);	%Samples of Class 1
+M_reduced3 = meas_reduced( iris_labels == 2 ,:);	%Samples of Class 2
+
 %  Visualize the sample dataset after LDA is applied
 %  Use different color/symbol for each class
 figure(4)
 hold on
-
+plot(M_reduced1(:, 1), M_reduced1(:, 2), 'bo');
+plot(M_reduced2(:, 1), M_reduced2(:, 2), 'rs');
+plot(M_reduced3(:, 1), M_reduced3(:, 2), 'g+');
 hold off
 
 
