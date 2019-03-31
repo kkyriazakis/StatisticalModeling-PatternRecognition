@@ -107,7 +107,7 @@ X_rec  = recoverDataPCA(Z, U, K);
 %  Plot the normalized dataset (returned from principalComponentAnalysis)
 %  Draw lines connecting the projected points to the original points
 fprintf('\nVisualizing example dataset for PCA.\n\n');
-figure(2)
+figure
 hold on;
 axis([-2.1 2.1 -2.1 2.1]); axis square;
 drawLine(-2.3*U(:,1), 2.3*U(:,1), '-g', 'LineWidth', 1);
@@ -122,7 +122,6 @@ hold off
 
 
 %% =============== PART B: FisherIris DATA ===============
-clear ; close all; clc
 
 %Load Fisher Iris Data
 load('fisheriris.mat');
@@ -142,7 +141,7 @@ IRIS3 = meas( iris_labels == 2 ,:);	%Samples of Class 2
 
 
 %  Visualize the example dataset
-figure(3)
+figure
 hold on
 plot(IRIS1(:, 1), IRIS1(:, 2), 'bo');
 plot(IRIS2(:, 1), IRIS2(:, 2), 'rs');
@@ -161,7 +160,7 @@ M_reduced3 = meas_reduced( iris_labels == 2 ,:);	%Samples of Class 2
 
 %  Visualize the sample dataset after LDA is applied
 %  Use different color/symbol for each class
-figure(4)
+figure
 hold on
 plot(M_reduced1(:, 1), M_reduced1(:, 2), 'bo');
 plot(M_reduced2(:, 1), M_reduced2(:, 2), 'rs');
