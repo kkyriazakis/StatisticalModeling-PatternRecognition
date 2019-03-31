@@ -25,17 +25,19 @@ function A = myLDA(Samples, Labels, NewDim)
         mu(i,:) = mean(Samples( Labels == i-1 ,:),1);
     end
     
-    %Calculate the Within Class Scatter Matrix
-    Sw = cov(Samples( Labels==0,:)) + cov(Samples( Labels==1,:)) + cov(Samples( Labels==2,:));
-        
     %Calculate the Global Mean
     m0 = mean(mean(Samples));
-    
-    %Calculate the Between Class Scatter Matrix
-	Sb = length(find(Labels == 0))*(mu(1,:) - m0)*(mu(1,:) - m0)';
-    Sb = Sb + length(find(Labels == 1))*(mu(2,:) - m0)*(mu(2,:) - m0)';
-    Sb = Sb + length(find(Labels == 2))*(mu(3,:) - m0)*(mu(3,:) - m0)';
-    
+
+    Sw = 0;
+    Sb = 0;
+    for i=1:NumClasses    
+        %Calculate the Within Class Scatter Matrix
+        Sw = Sw + cov(Samples( Labels==i-1,:));
+            
+        %Calculate the Between Class Scatter Matrix
+    	Sb = Sb + length(find(Labels == i-1))*(mu(i,:) - m0)*(mu(i,:) - m0)';        
+    end
+
     %Eigen matrix EigMat=inv(Sw)*Sb
     EigMat = inv(Sw)*Sb;
     
