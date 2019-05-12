@@ -23,7 +23,8 @@ clear ; close all; clc
 %  contains the label.
 
 data = load('exam_scores_data1.txt');
-X = data(:, [1, 2]); y = data(:, 3);
+X = data(:, [1, 2]); 
+y = data(:, 3);
 
 %% ==================== Part 1: Plotting ====================
 %  We start the exercise by first plotting the data to understand the 
@@ -61,7 +62,7 @@ X = [ones(m, 1) X];
 
 % Initialize fitting parameters
 initial_theta = zeros(n + 1, 1);
-
+%%
 % Compute and display initial cost and gradient
 [cost, grad] = costFunction(initial_theta, X, y);
 
