@@ -20,9 +20,9 @@ Y = tf.placeholder(shape=(batch_size, output_dim), dtype=tf.float32)  # Placehol
 # Normalize input data (standardization)
 def normalize(xdata):
     global m, s  #The mean (m) and std (s) of the data (xdata)
-    m =   # mean
-    s =   # standard deviation
-    x_norm = 
+    m = np.mean(xdata)   # mean
+    s = np.std(xdata)  # standard deviation
+    x_norm = np.linalg.norm(xdata)
     return(x_norm)
 
 def inputs():
