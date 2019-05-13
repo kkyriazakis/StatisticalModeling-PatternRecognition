@@ -2,8 +2,12 @@
 % to measure the similarity between vectors x and y
 function r = similarityMeasure(x, y)
     
+    x_m = mean(x);
+    y_m = mean(y);
 
-    r =      %Pearson's correlation coefficient
-    r = r^2; % square
+	%Pearson's correlation coefficient
+    r = sum( (x-x_m).*(y-y_m) )./( sum(y-y_m).^2 * sum(x-x_m).^2 );    
+    
+    r = r.^2; % square
 
 
