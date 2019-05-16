@@ -45,22 +45,22 @@ def inputs():
 
 # Define the linear model
 def combine_inputs(X):
-    Y_predicted_linear =  #The output of the linear model
+    Y_predicted_linear = tf.matmul(X, W) + b #The output of the linear model
     return Y_predicted_linear
 
 # Define the sigmoid inference model over the data X and return the result
 def inference(X):
     Threshold = 0.5
     print("Binary Logistic Regression Evaluation with Threshold:", Threshold)
-    Y_inference =  #Defines the output of the sigmoid (Probability)
-    Y_predicted =  #Binary prediction based on threshold
+    Y_inference =  tf.sigmoid(combine_inputs(X)) #Defines the output of the sigmoid (Probability)
+    Y_predicted =  tf.cast(Y_inference > 0.5, tf.float32) #Binary prediction based on threshold
     return Y_inference, Y_predicted
 
 # Compute the loss over the training data using the predictions and true labels Y
 def loss(X, Y):
     Yhat = combine_inputs(X)
-    SigCE =  #Sigmoid Cross Entropy
-    loss =   #Total Loss 
+    SigCE = tf.nn.sigmoid_cross_entropy_with_logits(Yhat, Y) #Sigmoid Cross Entropy
+    loss = tf.reduce_mean(SigCE) #Total Loss 
     return loss
 
 # Optimizer
@@ -75,7 +75,8 @@ def train(total_loss):
 # Evaluation on some Test Samples
 def evaluate(Xtest, Ytest):
     Y_inference, Y_predicted = inference(Xtest)
-    accuracy =     #The accuracy Graph
+    accuracy_graph = tf.reduce_mean(tf.cast(tf.equal(Y_predicted, Y), tf.float32))
+    accuracy = sess.run(accuracy_graph, feed_dict={X: Xtest, Y: Ytest}) #The accuracy Graph
     return accuracy
 
 
@@ -101,9 +102,9 @@ with tf.Session() as sess:
             X_batch = X_np[perm_indices[i:i+batch_size], :]
             Y_batch = Y_np[perm_indices[i:i+batch_size], :]
 
-            feed_dict = 
-            batch_loss, _ = sess.run( )  #Fill the parenthesis
-            #print('batch_loss = ', batch_loss)
+            feed_dict = {X: X_batch, Y: Y_batch}
+            batch_loss, _ = sess.run([total_loss, train_op], feed_dict)  #Fill the parenthesis
+            print('batch_loss = ', batch_loss)
             epoch_loss += batch_loss
 
         epoch_loss /= num_examples
@@ -114,22 +115,22 @@ with tf.Session() as sess:
     Xtest = tf.placeholder(shape=(None, num_features), dtype=tf.float32) # Placeholder for one input vector
     Ytest = tf.placeholder(shape=(None, ), dtype=tf.int32)
 
-    Ytest_inference, Ytest_predicted =  # Define the graphs for the inference (probability) and prediction (binary) 
+    Ytest_inference, Ytest_predicted = inference(Xtest) # Define the graphs for the inference (probability) and prediction (binary) 
     accuracy = evaluate(Xtest, Ytest)  #Accuracy Graph
 
     # Predict the test sample [45, 85]
     test_sample = np.array([[45, 85]], dtype=np.float32)
     # Normalize the test sample
-    test_sample = 
+    test_sample = normalize(test_sample)
 
-    feed_dict_test = 
+    feed_dict_test = {X: test_sample}
     print('Predicting the probabilities of sample [45, 85]')
-    Ytest_inference, Ytest_predicted = 
+    Ytest_inference, Ytest_predicted = inference(test_sample)
     print('Binary Prediction = ', Ytest_predicted, ' --- Prediction Probability = ', Ytest_inference )
 
     # Predict the accuracy of the training samples (Cheeting)
-    feed_dict_test = 
-    accuracy_np = 
+    feed_dict_test = {X: test_sample, Y: Ytest_predicted}
+    accuracy_np = evaluate(test_sample, Ytest_predicted)
 
     print('Accuracy of Training Samples = ', accuracy_np)
 
