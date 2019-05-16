@@ -63,7 +63,7 @@ def inference(X):
 # Compute the loss over the training data using the predictions and true labels Y
 def loss(X, Y):
     Yhat = combine_inputs(X)
-    SoftMaxCE = tf.nn.softmax_cross_entropy_with_logits(logits=Yhat, labels=Y)  # Sigmoid Cross Entropy
+    SoftMaxCE = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=Yhat, labels=Y)  # Sigmoid Cross Entropy
     loss = tf.reduce_mean(SoftMaxCE)  # Total Loss
     return loss
 
