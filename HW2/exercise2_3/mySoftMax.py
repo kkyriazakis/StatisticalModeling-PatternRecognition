@@ -19,11 +19,12 @@ Y = tf.placeholder(shape=(batch_size, ), dtype=tf.int32)  # Placeholder for targ
 
 # Normalize input data (standardization)
 def normalize(xdata):
-    global m, s  #The mean (m) and std (s) of the data (xdata)
-    m =   # mean
-    s =   # standard deviation
-    x_norm = 
-    return(x_norm)
+    global m, s  # The mean (m) and std (s) of the data (xdata)
+    m = np.mean(xdata)  # mean
+    s = np.std(xdata)  # standard deviation
+    x_norm = (xdata - m) / s
+    return x_norm
+
 
 def inputs():
     # Load data
@@ -43,23 +44,29 @@ def inputs():
     X_np = normalize(X_np)
     return X_np, Y_np
 
+
 # Define the linear model
 def combine_inputs(X):
-    Y_predicted_linear = 
+    Y_predicted_linear = tf.matmul(X, W) + b
     return Y_predicted_linear
+
 
 # Define the sigmoid inference model over the data X and return the result
 def inference(X):
-    Y_prob =  #Defines the output of the SoftMax (Probabilities)
-    Y_predicted =  #Get the output with the largest probability
+    Y_hat = tf.nn.softmax(combine_inputs(X))  # Defines the output of the SoftMax (Probabilities)
+
+    Y_prob = tf.argmax(Y_hat, axis=1, output_type=tf.int32)
+    Y_predicted = tf.argmax(Y, axis=1, output_type=tf.int32)  # Get the output with the largest probability
     return Y_prob, Y_predicted
+
 
 # Compute the loss over the training data using the predictions and true labels Y
 def loss(X, Y):
     Yhat = combine_inputs(X)
-    SoftMaxCE =  #SoftMax Cross Entropy
-    loss =  #Total Loss
+    SoftMaxCE = tf.nn.softmax_cross_entropy_with_logits(logits=Yhat, labels=Y)  # Sigmoid Cross Entropy
+    loss = tf.reduce_mean(SoftMaxCE)  # Total Loss
     return loss
+
 
 # Optimizer
 def train(total_loss):
@@ -70,16 +77,15 @@ def train(total_loss):
     update_op = optimizer.minimize(total_loss, var_list=trainable_variables)
     return update_op
 
+
 def evaluate(Xtest, Ytest):
     print("SoftMax Evaluation")
     Y_prob, Y_predicted = inference(Xtest)
-    accuracy =  #The accuracy Graph
-    return accuracy
+    accuracy_graph = tf.reduce_mean(tf.cast(tf.equal(Y_predicted, tf.cast(Ytest, tf.float32)), tf.float32))
+    return accuracy_graph
 
 
-
-
-X_np, Y_np = inputs() #Get the data samples
+X_np, Y_np = inputs() # Get the data samples
 init_op = tf.global_variables_initializer()
 
 # Execution: Training and Evaluation of the model
@@ -89,19 +95,19 @@ with tf.Session() as sess:
     num_examples = X_np.shape[0] - batch_size + 1
     total_loss = loss(X, Y)
     train_op = train(total_loss)
-	perm_indices = np.arange(num_examples)
+    perm_indices = np.arange(num_examples)
 
     for epoch in range(num_epochs):
         epoch_loss = 0
-		np.random.shuffle(perm_indices)
+        np.random.shuffle(perm_indices)
 		
         for i in range(num_examples-batch_size+1): # Sliding window of length = batch_size and shift = 1
             X_batch = X_np[perm_indices[i:i+batch_size], :]
             Y_batch = Y_np[perm_indices[i:i+batch_size]]			
 
-            feed_dict = 
+            feed_dict = {X: X_batch, Y: Y_batch}
 
-            batch_loss, _ = sess.run(  )  #Fill the parenthesis
+            batch_loss, _ = sess.run([total_loss, train_op], feed_dict)  # Fill the parenthesis
             #print('batch_loss = ', batch_loss)
             epoch_loss += batch_loss
 
@@ -113,24 +119,24 @@ with tf.Session() as sess:
     Xtest = tf.placeholder(shape=(None, num_features), dtype=tf.float32) # Placeholder for one input vector
     Ytest = tf.placeholder(shape=(None, ), dtype=tf.int32)
 
-    Ytest_prob, Ytest_predicted = 
+    Ytest_prob, Ytest_predicted = inference(Xtest)
     accuracy = evaluate(Xtest, Ytest)
 
     # Predict the test sample [45, 85]
     test_sample = np.array([[45, 85]], dtype=np.float32)
     # Normalize the test sample
-    test_sample = 
+    test_sample = normalize(test_sample)
 
-    feed_dict_test = 
+    feed_dict_test = {X: test_sample}
     print('Predicting the probabilities of sample [45, 85]')
-    Ytest_prob, Ytest_predicted = 
-    print('Binary Prediction = ', Ytest_predicted, ' --- Prediction Probabilities = ', Ytest_prob )
+    Ytest_prob, Ytest_predicted = inference(test_sample)
+    print('Binary Prediction = ', Ytest_predicted.eval(), ' --- Prediction Probabilities = ', Ytest_prob.eval())
 
     # Predict the accuracy of the training samples (Cheeting)
-    feed_dict_test = 
-    accuracy_np = 
+    feed_dict_test = {X: test_sample, Y: Ytest_predicted}
+    accuracy_np = evaluate(test_sample, Ytest_predicted)
 
-    print('Accuracy of Training Samples = ', accuracy_np)
+    print('Accuracy of Training Samples = ', accuracy_np.eval())
 
 
 

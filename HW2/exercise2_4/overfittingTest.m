@@ -88,7 +88,6 @@ for i = 1:numExamples
     end
 end
 
-
 % Proportion of true results (both true positives and true negatives) among the total number of cases examined
 accuracy = numCorrectlyClassified/numExamples;  
 disp(strcat('accuracy : ', num2str(accuracy)))
