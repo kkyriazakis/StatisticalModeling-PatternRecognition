@@ -44,7 +44,6 @@ for i = 1:numExamples
           r(j) = similarityMeasure(features(idx,j), labels(idx)); % Compute the similarity measure
     end
     [rSorted, sortedFeatureIndices] = sort(r, 'descend');
-    
     selectedIndices = sortedFeatureIndices(1:numSelectedFeatures);
 
     SVMStruct = fitcsvm(features(idx, selectedIndices), labels(idx));
