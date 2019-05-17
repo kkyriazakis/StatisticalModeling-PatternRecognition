@@ -3,7 +3,7 @@ from __future__ import print_function
 import numpy as np
 import tensorflow as tf
 
-#Initializations
+# Initializations
 num_features = 2
 output_dim = 2
 batch_size = 10
@@ -53,10 +53,8 @@ def combine_inputs(X):
 
 # Define the sigmoid inference model over the data X and return the result
 def inference(X):
-    Y_hat = tf.nn.softmax(combine_inputs(X))  # Defines the output of the SoftMax (Probabilities)
-
-    Y_prob = tf.argmax(Y_hat, axis=1, output_type=tf.int32)
-    Y_predicted = tf.argmax(Y, axis=1, output_type=tf.int32)  # Get the output with the largest probability
+    Y_prob = tf.nn.softmax(combine_inputs(X))  # Defines the output of the SoftMax (Probabilities)
+    Y_predicted = tf.argmax(Y_prob, axis=1, output_type=tf.int32)  # Get the output with the largest probability
     return Y_prob, Y_predicted
 
 
@@ -79,13 +77,15 @@ def train(total_loss):
 
 
 def evaluate(Xtest, Ytest):
-    print("SoftMax Evaluation")
+    print("\nSoftMax Evaluation")
     Y_prob, Y_predicted = inference(Xtest)
-    accuracy_graph = tf.reduce_mean(tf.cast(tf.equal(Y_predicted, tf.cast(Ytest, tf.float32)), tf.float32))
-    return accuracy_graph
+    Ycorrect = tf.argmax(Y_predicted, axis=1, output_type=tf.int32)
+    correct = tf.cast(tf.equal(Y_predicted, Ytest), tf.float32)
+    accuracy = tf.reduce_mean(correct)
+    return accuracy
 
 
-X_np, Y_np = inputs() # Get the data samples
+X_np, Y_np = inputs()  # Get the data samples
 init_op = tf.global_variables_initializer()
 
 # Execution: Training and Evaluation of the model
@@ -100,26 +100,24 @@ with tf.Session() as sess:
     for epoch in range(num_epochs):
         epoch_loss = 0
         np.random.shuffle(perm_indices)
-		
-        for i in range(num_examples-batch_size+1): # Sliding window of length = batch_size and shift = 1
+        for i in range(num_examples-batch_size+1):  # Sliding window of length = batch_size and shift = 1
             X_batch = X_np[perm_indices[i:i+batch_size], :]
             Y_batch = Y_np[perm_indices[i:i+batch_size]]			
 
             feed_dict = {X: X_batch, Y: Y_batch}
 
             batch_loss, _ = sess.run([total_loss, train_op], feed_dict)  # Fill the parenthesis
-            #print('batch_loss = ', batch_loss)
+            # print('batch_loss = ', batch_loss)
             epoch_loss += batch_loss
 
         epoch_loss /= num_examples
         print('epoch:', epoch, '  epoch_loss = ', epoch_loss)
 
-
     # Start the Evaluation based on the trained model
-    Xtest = tf.placeholder(shape=(None, num_features), dtype=tf.float32) # Placeholder for one input vector
+    Xtest = tf.placeholder(shape=(None, num_features), dtype=tf.float32)  # Placeholder for one input vector
     Ytest = tf.placeholder(shape=(None, ), dtype=tf.int32)
 
-    Ytest_prob, Ytest_predicted = inference(Xtest)
+    # Ytest_prob, Ytest_predicted = inference(Xtest)
     accuracy = evaluate(Xtest, Ytest)
 
     # Predict the test sample [45, 85]
@@ -127,18 +125,13 @@ with tf.Session() as sess:
     # Normalize the test sample
     test_sample = normalize(test_sample)
 
-    feed_dict_test = {X: test_sample}
     print('Predicting the probabilities of sample [45, 85]')
     Ytest_prob, Ytest_predicted = inference(test_sample)
     print('Binary Prediction = ', Ytest_predicted.eval(), ' --- Prediction Probabilities = ', Ytest_prob.eval())
 
-    # Predict the accuracy of the training samples (Cheeting)
-    feed_dict_test = {X: test_sample, Y: Ytest_predicted}
-    accuracy_np = evaluate(test_sample, Ytest_predicted)
+    # Predict the accuracy of the training samples (Cheating)
+    # feed_dict_test = {X: test_sample, Y: Ytest_predicted}
+    accuracy_np = evaluate(X_np, Y_np)
 
     print('Accuracy of Training Samples = ', accuracy_np.eval())
-
-
-
-
 
