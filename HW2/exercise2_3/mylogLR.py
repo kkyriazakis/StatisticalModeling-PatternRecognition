@@ -129,8 +129,8 @@ with tf.Session() as sess:
     Ytest_inference, Ytest_predicted = inference(test_sample)
     print('\nBinary Prediction = ', Ytest_predicted.eval(), ' --- Prediction Probability = ', Ytest_inference.eval())
 
-    # Predict the accuracy of the training samples (Cheeting)
+    # Predict the accuracy of the training samples (Cheating)
     feed_dict_test = {X: test_sample, Y: Ytest_predicted}
-    accuracy_np = evaluate(test_sample, Ytest_predicted)
+    accuracy_np = evaluate(X_np, Y_np)
 
     print('\nAccuracy of Training Samples = ', accuracy_np.eval())
